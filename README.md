@@ -2,13 +2,13 @@
 
 Mirror and Serve Package Repos
 
-# Quick start
+## Quick start
 
 `make run_web` 
 This will generate and update the repo in a folder called repo in the current directory, it will then
 start a webserver on port 8090 on the docker host 
 
-# `Mirror Repos`
+## Mirror Repos
 
 `docker run -it --rm mrepo`
 
