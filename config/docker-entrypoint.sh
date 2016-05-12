@@ -1,7 +1,7 @@
 #!/bin/bash
 
 : ${UPDATE:=True}
-: ${WEB}
+: ${WEB:=True}
 : ${REPO}
 : ${DIST}
 : ${VERBOSE:=False}
@@ -38,12 +38,12 @@ if [ ${FROZEN} ]; then
 fi
 
 # run that web server!
-if [ ${WEB} ]; then
+if [ ${WEB} == "True" ]; then
     #Run mrepo, without updates/generation, to mount iso(s)
     /usr/bin/mrepo -v
     rm -rf /var/run/httpd/* /tmp/httpd*
-    echo 'Starting Apache...'
-    exec /usr/sbin/apachectl -D FOREGROUND
+    echo 'Starting Nginx...'
+    exec /usr/sbin/nginx 
 fi
 
 #if we made it this far, we're exiting (mrepo finished its update, or apache exited)

@@ -2,10 +2,12 @@
 FROM centos:centos6
 MAINTAINER Tim Hartmann <tfhartmann@gmail.com>
 
-RUN yum install epel-release -y && \
-    yum install http://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm -y && \
-    yum install http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm -y && \
-    yum install -y puppet \
+COPY config/nginx.repo /etc/yum.repos.d/
+
+RUN yum install epel-release -y
+RUN yum install http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm -y 
+RUN yum install -y mrepo \
+    lftp \
     apt-mirror \
     tar \
     hardlink \
@@ -16,23 +18,22 @@ RUN yum install epel-release -y && \
     python-pip \
     fuse \ 
     yum-utils \ 
-    fuse-iso && \
+    fuse-iso \
+    nginx && \
     yum clean all
-
 
 RUN mkdir -p /etc/mrepo.conf.d
 RUN mkdir -p /mrepo/www
-RUN puppet module install puppetlabs-mrepo
-ADD conf/init.pp /tmp/init.pp
-RUN puppet apply /tmp/init.pp --verbose
-RUN chown -R apache:apache /mrepo
+RUN chown -R nobody:nobody /mrepo
 RUN echo 'set dns:order "inet inet6"' >> /etc/lftp.conf
 
-ADD conf/mrepo.conf /etc/mrepo.conf 
-ADD conf/repos.conf /etc/mrepo.conf.d/repos.conf 
-ADD scripts/run-mrepo.sh /tmp/run-mrepo.sh
+ADD mrepo/mrepo.conf /etc/mrepo.conf 
+ADD mrepo/repos.conf /etc/mrepo.conf.d/repos.conf 
+ADD config/nginx.conf /etc/nginx/
+ADD config/docker-entrypoint.sh / 
+
 # Run MRepo and/or apache
-CMD [ "/tmp/run-mrepo.sh" ]
+CMD [ "/docker-entrypoint.sh" ]
 
 # Expose Web ports
 EXPOSE 80

@@ -2,36 +2,40 @@
 
 Mirror and Serve Package Repos
 
+#### `Quick start`
+
+`make run_web` - This will generate and update the repo in a folder called repo in the current directory, it will then
+start a webserver on port 8090 on the docker host 
+
 #### `Mirror Repos`
 
+`docker run -it --rm mrepo`
 
-`docker run -it --rm tfhartmann/mrepo`
+Mirror Repos and start nginx to serve them over port 80
 
-Mirror Repos and start apache to serve them over port 80
+`docker run -p 80:80 -it -e WEB=True mrepo`
 
-`docker run -p 80:80 -it -e WEB=True tfhartmann/mrepo`
+Mirror Repos onto a local system - This allows your repos to persist after the container had gone to the bit bucket.
 
-Mirror Repos onto a shared file system - This allows your repos to persist after the container had gone to the bit bucket.
-
-`docker run -it --rm -v /nfs/filesystem/repo:/mrepo tfhartmann/mrepo `
+`docker run -it --rm -v /localfolder/repo:/mrepo mrepo `
 
 Mirror just one repo (for any dist it exists in)
-`docker run -it --rm -v -e REPO=epel tfhartmann/mrepo`
+`docker run -it --rm -v -e REPO=epel mrepo`
 
 Mirror repose and freeze/lock the CentOS repo
-`docker run -it --rm -e FROZEN=centos6-x86_64 -v /nfs/filesystem/repo:/mrepo tfhartmann/mrepo`
+`docker run -it --rm -e FROZEN=centos6-x86_64 -v /localfolder/repo:/mrepo mrepo`
 
 
 Run the container but overide the default repo config file. Use this to define the repos you want for your site
 
-`docker run -it --rm -v /mrepo/config/repos.conf:/etc/mrepo.conf.d/repos.conf tfhartmann/mrepo`
+`docker run -it --rm -v /mrepo/config/repos.conf:/etc/mrepo.conf.d/repos.conf mrepo`
 
 
 ##  Environment Variables
 
 ### `WEB`
-Passing any value to the WEB variable will start apache at the end of the mrepo run, in a typical run you might pass `-e WEB=True`
-This starts apache **after** mrepo runs, and will continue to serve the /mrepo/wwwdir until the container is stoped or killed.
+Passing any value to the WEB variable will start nginx at the end of the mrepo run, in a typical run you might pass `-e WEB=True`
+This starts nginx **after** mrepo runs, and will continue to serve the /mrepo/www dir until the container is stopped or killed.
 
 ### `FROZEN`
 This variable takes a single argument, which *must* be the format "$dist-$arch" and must match the directory in the mrepo srcdir for the repo you want to freeze/lock.  You must also have a repo definition in your distro config called 'frozen'
