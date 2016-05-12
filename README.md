@@ -2,12 +2,13 @@
 
 Mirror and Serve Package Repos
 
-#### `Quick start`
+# Quick start
 
-`make run_web` - This will generate and update the repo in a folder called repo in the current directory, it will then
+`make run_web` 
+This will generate and update the repo in a folder called repo in the current directory, it will then
 start a webserver on port 8090 on the docker host 
 
-#### `Mirror Repos`
+# `Mirror Repos`
 
 `docker run -it --rm mrepo`
 
@@ -33,35 +34,25 @@ Run the container but overide the default repo config file. Use this to define t
 
 ##  Environment Variables
 
-### `WEB`
-Passing any value to the WEB variable will start nginx at the end of the mrepo run, in a typical run you might pass `-e WEB=True`
-This starts nginx **after** mrepo runs, and will continue to serve the /mrepo/www dir until the container is stopped or killed.
+- WEB - defaults to the string `False`, set to `True` to start the nginx webserver and keep the container active serving the mirror after it has been created/updated
+- DIST - Name of the dist to update, defaults to empty, so all dists are updated.
+- VERBOSE - Cranks up verbosity of mrepo so you can see what its doing
+- UPDATE - defaults to the string "True" and causes mrepo to run with the -guv argument.  It can be passed as *anything* other then true if you want to run this container, but do *not* want to updated your configured mirrors.
+- FROZEN - defaults to empty`,  This variable takes a single argument, which *must* be the format "$dist-$arch" and must match the directory in the mrepo srcdir for the repo you want to freeze/lock.  You must also have a repo definition in your distro config called 'frozen'
 
-### `FROZEN`
-This variable takes a single argument, which *must* be the format "$dist-$arch" and must match the directory in the mrepo srcdir for the repo you want to freeze/lock.  You must also have a repo definition in your distro config called 'frozen'
-
-For example, if you wanted to lock a CentOS repo that was configured like this:
-
-```
-[centos6.6]
-name = CentOS $release ($arch)
-release = 6.6
-arch = x86_64
-os = http://archive.kernel.org/centos-vault/$release/os/$arch/
-centosplus = http://archive.kernel.org/centos-vault/$release/centosplus/$arch/
-updates = http://archive.kernel.org/centos-vault/$release/updates/$arch/
-extras = http://archive.kernel.org/centos-vault/$release/extras/$arch/
-frozen = file:///mrepo/$dist-$arch/frozen
-```
-The value of the frozen variable would be `centos6-x86_64`
-
-**FROZEN** Should only be passed *once* for each repo you want to freeze. It locks the repo at a particular point in time, and passing the FROZEN variable multiple times would updated the frozen repo to the most current version of the packages.
-
-### `UPDATE`
-UPDATE defaults to the string "True" and causes mrepo to run with the -guv argument.  It can be passed as *anything* other then true if you want to run this container, but do *not* want to updated your configured mirrors.
-
-### `DIST`
-Name of the dist to update, defaults to empty, so all dists are updated.
-
-### `VERBOSE`
-Cranks up verbosity of mrepo so you can see what its doing
+>For example, if you wanted to lock a CentOS repo that was configured like this:
+>
+>```
+>[centos6.6]
+>name = CentOS $release ($arch)
+>release = 6.6
+>arch = x86_64
+>os = http://archive.kernel.org/centos-vault/$release/os/$arch/
+>centosplus = http://archive.kernel.org/centos-vault/$release/centosplus/$arch/
+>updates = http://archive.kernel.org/centos-vault/$release/updates/$arch/
+>extras = http://archive.kernel.org/centos-vault/$release/extras/$arch/
+>frozen = file:///mrepo/$dist-$arch/frozen
+>```
+>The value of the frozen variable would be `centos6-x86_64`
+>
+>**FROZEN** Should only be passed *once* for each repo you want to freeze. It locks the repo at a particular point in time, and passing the FROZEN variable multiple times would updated the frozen repo to the most current version of the packages.
