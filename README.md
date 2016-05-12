@@ -37,9 +37,9 @@ Run the container but overide the default repo config file. Use this to define t
 
 - WEB - defaults to the string `False`, set to `True` to start the nginx webserver and keep the container active serving the mirror after it has been created/updated
 - DIST - Name of the dist to update, defaults to empty, so all dists are updated.
-- VERBOSE - defaults to `False`, set to anything to crank up verbosity of mrepo so you can see what its doing
-- UPDATE - defaults to the string "True" and causes mrepo to run with the -guv argument.  It can be passed as *anything* other then true if you want to run this container, but do *not* want to updated your configured mirrors.
-- FROZEN - defaults to empty`,  This variable takes a single argument, which *must* be the format "$dist-$arch" and must match the directory in the mrepo srcdir for the repo you want to freeze/lock.  You must also have a repo definition in your distro config called 'frozen'
+- VERBOSE - defaults to the string `False`, set to anything to crank up verbosity of mrepo so you can see what its doing
+- UPDATE - defaults to the string `True` and causes mrepo to run with the -guv argument.  It can be passed as *anything* other then true if you want to run this container, but do *not* want to updated your configured mirrors.
+- FROZEN - defaults to empty,  This variable takes a single argument, which *must* be the format "$dist-$arch" and must match the directory in the mrepo srcdir for the repo you want to freeze/lock.  You must also have a repo definition in your distro config called 'frozen'
 
 >For example, if you wanted to lock a CentOS repo that was configured like this:
 >
